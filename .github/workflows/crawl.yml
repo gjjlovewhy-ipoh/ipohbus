@@ -1,9 +1,8 @@
 name: KL→Ipoh大巴定时爬虫
 on:
   schedule:
-    # cron: 分 时 日 月 周 | 每2小时运行一次
     - cron: '0 */2 * * *'
-  workflow_dispatch: # 支持手动点击触发测试
+  workflow_dispatch:
 jobs:
   run_spider:
     runs-on: ubuntu-latest
@@ -11,7 +10,8 @@ jobs:
       - name: 拉取仓库代码
         uses: actions/checkout@v4
         with:
-          persist-credentials: true # 开启提交权限，自动更新bus_data.js
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 配置Python3.10
         uses: actions/setup-python@v5
@@ -24,10 +24,14 @@ jobs:
       - name: 执行爬虫生成bus_data.js
         run: python spider.py
 
-      - name: 自动提交更新后的bus_data.js到GitHub
+      - name: 提交更新文件
         run: |
           git config --global user.name "AutoSpiderBot"
-          git config --global user.email "bot@spider.com"
+          git config --global user.email "bot@spider@example.com"
           git add bus_data.js
-          git commit -m "🤖 自动更新大巴数据: $(date +'%Y-%m-%d %H:%M')" || echo "无数据变更跳过提交"
-          git push
+          if [[ -n $(git status --porcelain) ]]; then
+            git commit -m "🤖 自动更新大巴数据: $(date +'%Y-%m-%d %H:%M')"
+            git push
+          else
+            echo "数据未变更，跳过提交"
+          fi
