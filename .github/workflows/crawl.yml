@@ -1,0 +1,33 @@
+name: KL→Ipoh大巴定时爬虫
+on:
+  schedule:
+    # cron: 分 时 日 月 周 | 每2小时运行一次
+    - cron: '0 */2 * * *'
+  workflow_dispatch: # 支持手动点击触发测试
+jobs:
+  run_spider:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取仓库代码
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true # 开启提交权限，自动更新bus_data.js
+
+      - name: 配置Python3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 执行爬虫生成bus_data.js
+        run: python spider.py
+
+      - name: 自动提交更新后的bus_data.js到GitHub
+        run: |
+          git config --global user.name "AutoSpiderBot"
+          git config --global user.email "bot@spider.com"
+          git add bus_data.js
+          git commit -m "🤖 自动更新大巴数据: $(date +'%Y-%m-%d %H:%M')" || echo "无数据变更跳过提交"
+          git push
