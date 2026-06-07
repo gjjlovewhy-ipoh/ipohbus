@@ -1,5 +1,5 @@
 const KL2IPOH_BUS_DATA = {
-  "updateTime": "2026-06-07 14:05:27",
+  "updateTime": "2026-06-07 17:23:53",
   "routeInfo": {
     "from": "吉隆坡(Kuala Lumpur,马来西亚)",
     "to": "怡保(Ipoh,霹雳州)",
@@ -9,7 +9,7 @@ const KL2IPOH_BUS_DATA = {
       "MYR马币",
       "SGD新币"
     ],
-    "fetch_time": "2026-06-07 14:05:27",
+    "fetch_time": "2026-06-07 17:23:53",
     "depart_date": "2026-06-07(周日)",
     "return_date": "2026-06-08(周一)"
   },
